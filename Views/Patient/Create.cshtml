@@ -1,0 +1,464 @@
+﻿@model DocBook.Models.Patient
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <div class="form-icon">👤</div>
+                <h2 class="text-primary mb-2">Register New Patient</h2>
+                <p class="text-muted">Fill in the patient information below</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card form-card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <form asp-action="Create" asp-controller="Patient" method="post" id="patientForm">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Name Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">👤</i> Full Name
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control form-control-lg"
+                                   placeholder="Enter patient's full name" required />
+                            <div class="form-feedback">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Gender Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">⚧️</i> Gender
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="gender-options">
+                                <div class="form-check form-check-inline gender-card">
+                                    <input class="form-check-input" type="radio" name="Gender" id="male" value="Male" />
+                                    <label class="form-check-label" for="male">
+                                        <div class="gender-icon">👨</div>
+                                        <span>Male</span>
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline gender-card">
+                                    <input class="form-check-input" type="radio" name="Gender" id="female" value="Female" />
+                                    <label class="form-check-label" for="female">
+                                        <div class="gender-icon">👩</div>
+                                        <span>Female</span>
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline gender-card">
+                                    <input class="form-check-input" type="radio" name="Gender" id="other" value="Other" />
+                                    <label class="form-check-label" for="other">
+                                        <div class="gender-icon">🤷</div>
+                                        <span>Other</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-feedback">
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- DOB Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">🎂</i> Date of Birth
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="date-input-wrapper">
+                                <input asp-for="DOB" type="date" class="form-control form-control-lg" required />
+                                <div class="age-display" id="ageDisplay"></div>
+                            </div>
+                            <div class="form-feedback">
+                                <span asp-validation-for="DOB" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">📞</i> Contact Number
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Contact" class="form-control form-control-lg"
+                                   placeholder="Enter phone number" type="tel" required />
+                            <div class="form-feedback">
+                                <span asp-validation-for="Contact" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Address Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">📍</i> Address
+                                <span class="text-danger">*</span>
+                            </label>
+                            <textarea asp-for="Address" class="form-control form-control-lg" rows="3"
+                                      placeholder="Enter complete address" required></textarea>
+                            <div class="character-count">
+                                <span id="addressCount">0</span>/200 characters
+                            </div>
+                            <div class="form-feedback">
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline-secondary btn-lg" onclick="window.history.back()">
+                                ⬅️ Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <span class="btn-text">✅ Register Patient</span>
+                                <span class="btn-loading" style="display: none;">
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    Saving...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Text -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i>Fields marked with <span class="text-danger">*</span> are required</i>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Form Header */
+    .form-icon {
+        font-size: 60px;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+
+    /* Form Card */
+    .form-card {
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fff 0%, #f8f9fc 100%);
+        transition: all 0.3s ease;
+    }
+
+        .form-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+        }
+
+    /* Form Groups */
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .field-icon {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+
+    /* Input Styling */
+    .form-control {
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        padding: 12px 16px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+            background: #ffffff;
+        }
+
+    .form-control-lg {
+        font-size: 16px;
+        padding: 15px 20px;
+    }
+
+    /* Gender Selection */
+    .gender-options {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .gender-card {
+        flex: 1;
+        margin: 0 !important;
+    }
+
+        .gender-card .form-check-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            min-height: 100px;
+            justify-content: center;
+        }
+
+            .gender-card .form-check-label:hover {
+                border-color: #667eea;
+                background: #f7faff;
+                transform: translateY(-2px);
+            }
+
+        .gender-card .form-check-input:checked + .form-check-label {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+    .gender-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .form-check-input {
+        display: none;
+    }
+
+    /* Date Input */
+    .date-input-wrapper {
+        position: relative;
+    }
+
+    .age-display {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #667eea;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+        .age-display.show {
+            opacity: 1;
+        }
+
+    /* Character Count */
+    .character-count {
+        text-align: right;
+        font-size: 12px;
+        color: #a0aec0;
+        margin-top: 5px;
+    }
+
+    /* Form Feedback */
+    .form-feedback {
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    /* Action Buttons */
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn {
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        min-width: 200px;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+    .btn-outline-secondary {
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+        }
+
+    /* Loading State */
+    .btn-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Animations */
+     fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .form-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Responsive */
+  (max-width: 768px) {
+        .gender-options
+
+    {
+        flex-direction: column;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    }
+
+    /* Form Validation Styling */
+    .form-control.is-invalid {
+        border-color: #e53e3e;
+    }
+
+    .form-control.is-valid {
+        border-color: #38a169;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('patientForm');
+        const dobInput = document.querySelector('input[name="DOB"]');
+        const ageDisplay = document.getElementById('ageDisplay');
+        const addressTextarea = document.querySelector('textarea[name="Address"]');
+        const addressCount = document.getElementById('addressCount');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Age calculation on DOB change
+        dobInput.addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            if (age >= 0 && age <= 150) {
+                ageDisplay.textContent = age + ' years old';
+                ageDisplay.classList.add('show');
+            } else {
+                ageDisplay.classList.remove('show');
+            }
+        });
+
+        // Character count for address
+        addressTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            addressCount.textContent = length;
+
+            if (length > 200) {
+                addressCount.style.color = '#e53e3e';
+            } else if (length > 150) {
+                addressCount.style.color = '#ed8936';
+            } else {
+                addressCount.style.color = '#a0aec0';
+            }
+        });
+
+        // Form submission with loading state
+        form.addEventListener('submit', function(e) {
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'flex';
+        });
+
+        // Phone number formatting
+        const contactInput = document.querySelector('input[name="Contact"]');
+        contactInput.addEventListener('input', function() {
+            // Remove non-numeric characters
+            this.value = this.value.replace(/[^0-9+\-\s()]/g, '');
+        });
+
+        // Form validation styling
+        const inputs = form.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid', 'is-valid');
+            });
+        });
+
+        // Gender selection validation
+        const genderInputs = document.querySelectorAll('input[name="Gender"]');
+        genderInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // Remove validation classes from all gender inputs
+                genderInputs.forEach(g => {
+                    g.classList.remove('is-invalid', 'is-valid');
+                });
+            });
+        });
+    });
+</script>

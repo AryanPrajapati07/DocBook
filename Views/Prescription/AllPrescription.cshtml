@@ -1,0 +1,31 @@
+﻿<br/>
+<h3>All Prescriprions</h3>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Prescription ID</th>
+            <th>Patient Name</th>
+            <th>Doctor Name</th>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Instructions</th>
+            <th>Prescribed On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PrescriptionId</td>
+                <td>@item.PatientName</td>
+                <td>@item.DoctorName</td>
+                <td>@item.MedicineName</td>
+                <td>@item.Dosage</td>
+                <td>@item.Instructions</td>
+                <td>@item.PrescribedOn.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>

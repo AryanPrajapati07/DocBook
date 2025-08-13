@@ -1,0 +1,18 @@
+﻿@model DocBook.Models.Appointment
+<h2>Delete Appointment</h2>
+<dl class="row">
+    <dt class="col-sm-2">Patient</dt>
+    <dd class="col-sm-10">@Model.PatientName</dd>
+    <dt class="col-sm-2">Doctor</dt>
+    <dd class="col-sm-10">@Model.DoctorName</dd>
+    <dt class="col-sm-2">Date</dt>
+    <dd class="col-sm-10">@Model.AppointmentDate.ToString("yyyy-MM-dd HH:mm")</dd>
+    <dt class="col-sm-2">Reason</dt>
+    <dd class="col-sm-10">@Model.Reason</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.AppointmentId" />
+    <button class="btn btn-danger" type="submit">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

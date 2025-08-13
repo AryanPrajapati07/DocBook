@@ -1,0 +1,24 @@
+﻿@model DocBook.Models.Doctor
+@{
+    ViewData["Title"] = "Edit Doctor";
+}
+<h2>Edit Doctor</h2>
+
+<form asp-action="Edit" method="post">
+    <input asp-for="DoctorId" type="hidden" />
+    <div class="mb-3">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Specialization"></label>
+        <input asp-for="Specialization" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Contact"></label>
+        <input asp-for="Contact" class="form-control" />
+    </div>
+   
+    <button class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

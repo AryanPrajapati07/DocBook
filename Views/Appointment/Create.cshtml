@@ -1,0 +1,64 @@
+﻿@model DocBook.Models.AppointmentViewModel
+@{
+    ViewData["Title"] = "Create Appointment";
+}
+
+<div class="container mx-auto p-6 max-w-lg">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h2>
+
+    <form asp-action="Create" method="post" class="space-y-6">
+        <!-- Patient Selection -->
+        <div>
+            <label for="PatientId" class="block text-sm font-medium text-gray-700">Patient</label>
+            <select asp-for="PatientId" asp-items="ViewBag.Patients" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Select a patient</option>
+            </select>
+            <span asp-validation-for="PatientId" class="text-red-500 text-sm mt-1"></span>
+        </div>
+
+        <!-- Doctor Selection -->
+        <div>
+            <label for="DoctorId" class="block text-sm font-medium text-gray-700">Doctor</label>
+            <select asp-for="DoctorId" asp-items="ViewBag.Doctors" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Select a doctor</option>
+            </select>
+            <span asp-validation-for="DoctorId" class="text-red-500 text-sm mt-1"></span>
+        </div>
+
+        <!-- Appointment Date & Time -->
+        <div>
+            <label for="AppointmentDate" class="block text-sm font-medium text-gray-700">Appointment Date & Time</label>
+            <input asp-for="AppointmentDate" type="datetime-local" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+            <span asp-validation-for="AppointmentDate" class="text-red-500 text-sm mt-1"></span>
+        </div>
+
+        <!-- Reason -->
+        <div>
+            <label for="Reason" class="block text-sm font-medium text-gray-700">Reason</label>
+            <textarea asp-for="Reason" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Enter the reason for the appointment"></textarea>
+            <span asp-validation-for="Reason" class="text-red-500 text-sm mt-1"></span>
+        </div>
+
+        <!-- Status -->
+        <div>
+            <label for="Status" class="block text-sm font-medium text-gray-700">Status</label>
+            <select asp-for="Status" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Select status</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            <span asp-validation-for="Status" class="text-red-500 text-sm mt-1"></span>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Save</button>
+            <a asp-action="Index" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition" onclick="return confirm('Are you sure you want to cancel? Any unsaved changes will be lost.');">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Include Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+

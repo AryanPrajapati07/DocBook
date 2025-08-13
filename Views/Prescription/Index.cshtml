@@ -1,0 +1,49 @@
+﻿@model List<DocBook.Models.Prescription>
+
+@{
+    var ap = ViewBag.Appointment as DocBook.Models.Appointment;
+}
+<h2>
+    Prescriptions for @ap.PatientName with Dr. @ap.DoctorName
+    - @ap.AppointmentDate.ToString("yyyy-MM-dd")
+</h2>
+
+<a class="btn btn-primary"
+   href="/Prescription/Create?appointmentId=@ap.AppointmentId">Add Prescription</a>
+
+<table class="table mt-2">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Instructions</th>
+            <th>PrescribedOn</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ap != null)
+{
+
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.PrescriptionId</td>
+                <td>@ap.PatientName</td>
+                <td>@ap.DoctorName</td>
+                <td>@p.MedicineName</td>
+                <td>@p.Dosage</td>
+                <td>@(p.Instructions?.Length > 80 ? p.Instructions.Substring(0, 80) + "..." : p.Instructions)</td>
+                <td>@p.PrescribedOn.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <a class="btn btn-sm btn-secondary" href="/Prescription/Edit/@p.PrescriptionId">Edit</a>
+                    <a class="btn btn-sm btn-danger" href="/Prescription/Delete/@p.PrescriptionId">Delete</a>
+                </td>
+            </tr>
+        }
+        }
+    </tbody>
+</table>

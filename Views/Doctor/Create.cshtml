@@ -1,0 +1,292 @@
+﻿@model DocBook.Models.Doctor
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <div class="form-icon">👤</div>
+                <h2 class="text-primary mb-2">Register New Doctor</h2>
+                <p class="text-muted">Fill in the Doctor information below</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card form-card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <form asp-action="Create" asp-controller="Doctor" method="post" id="patientForm">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Name Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">👤</i> Full Name
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control form-control-lg"
+                                   placeholder="Enter patient's full name" required />
+                            <div class="form-feedback">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Specialization Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">📍</i> Specialization
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Specialization" class="form-control form-control-lg"
+                                   placeholder="Enter Specializations" required />
+
+                            <div class="form-feedback">
+                                <span asp-validation-for="Specialization" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label">
+                                <i class="field-icon">📞</i> Contact Number
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Contact" class="form-control form-control-lg"
+                                   placeholder="Enter phone number" type="tel" required />
+                            <div class="form-feedback">
+                                <span asp-validation-for="Contact" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline-secondary btn-lg" onclick="window.history.back()">
+                                ⬅️ Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <span class="btn-text">✅ Register Patient</span>
+                                <span class="btn-loading" style="display: none;">
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    Saving...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Text -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i>Fields marked with <span class="text-danger">*</span> are required</i>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Form Header */
+    .form-icon {
+        font-size: 60px;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+
+    /* Form Card */
+    .form-card {
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fff 0%, #f8f9fc 100%);
+        transition: all 0.3s ease;
+    }
+
+        .form-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+        }
+
+    /* Form Groups */
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .field-icon {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+
+    /* Input Styling */
+    .form-control {
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        padding: 12px 16px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+            background: #ffffff;
+        }
+
+    .form-control-lg {
+        font-size: 16px;
+        padding: 15px 20px;
+    }
+
+    
+    
+    /* Form Feedback */
+    .form-feedback {
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    /* Action Buttons */
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn {
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        min-width: 200px;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+    .btn-outline-secondary {
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+        }
+
+    /* Loading State */
+    .btn-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Animations */
+    fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .form-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Responsive */
+    (max-width: 768px) {
+        .gender-options
+
+    {
+        flex-direction: column;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    }
+
+    /* Form Validation Styling */
+    .form-control.is-invalid {
+        border-color: #e53e3e;
+    }
+
+    .form-control.is-valid {
+        border-color: #38a169;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('patientForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        
+
+        // Form submission with loading state
+        form.addEventListener('submit', function(e) {
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'flex';
+        });
+
+        // Phone number formatting
+        const contactInput = document.querySelector('input[name="Contact"]');
+        contactInput.addEventListener('input', function() {
+            // Remove non-numeric characters
+            this.value = this.value.replace(/[^0-9+\-\s()]/g, '');
+        });
+
+        // Form validation styling
+        const inputs = form.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid', 'is-valid');
+            });
+        });
+
+        
+    });
+</script>

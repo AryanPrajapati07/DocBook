@@ -1,0 +1,102 @@
+﻿@model List<DocBook.Models.Appointment>
+<div class="container mx-auto p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold text-gray-800">Appointments</h2>
+        <a class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition" href="/Appointment/Create">New Appointment</a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-4">
+        <input type="text" id="searchInput" placeholder="Search by patient or doctor..." class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <div class="overflow-x-auto bg-white shadow rounded-lg">
+        <table class="min-w-full table-auto">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600 cursor-pointer hover:text-blue-600" onclick="sortTable(0)">#</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600 cursor-pointer hover:text-blue-600" onclick="sortTable(1)">Patient</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600 cursor-pointer hover:text-blue-600" onclick="sortTable(2)">Doctor</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600 cursor-pointer hover:text-blue-600" onclick="sortTable(3)">Date & Time</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Reason</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prescription</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="appointmentTable">
+                @foreach (var a in Model)
+                {
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2 text-sm text-gray-700">@a.AppointmentId</td>
+                        <td class="px-4 py-2 text-sm text-gray-700">@a.PatientName</td>
+                        <td class="px-4 py-2 text-sm text-gray-700">@a.DoctorName</td>
+                        <td class="px-4 py-2 text-sm text-gray-700">@a.AppointmentDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td class="px-4 py-2 text-sm text-gray-700">@a.Reason</td>
+                        <td class="px-4 py-2 text-sm">
+                            <span class="@(a.Status == "Confirmed" ? "bg-green-100 text-green-800" : a.Status == "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800") px-2 py-1 rounded-full text-xs font-medium">
+                                @a.Status
+                            </span>
+                        </td>
+                        <td class="px-4 py-2 text-sm">
+                            <a asp-controller="Prescription" asp-action="Index" asp-route-appointmentId="@a.AppointmentId"
+                               class="inline-block bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition mr-2">View</a>
+                         </td>
+                        <td class="px-4 py-2 text-sm">
+                           
+                            <a class="inline-block bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition mr-2" href="/Appointment/Edit/@a.AppointmentId">Edit</a>
+                            <a class="inline-block bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition" href="/Appointment/Delete/@a.AppointmentId" onclick="return confirm('Are you sure you want to delete this appointment?')">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Include Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<!-- JavaScript for Sorting and Searching -->
+<script>
+    // Search Functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#appointmentTable tr');
+
+        rows.forEach(row => {
+            const patient = row.cells[1].textContent.toLowerCase();
+            const doctor = row.cells[2].textContent.toLowerCase();
+            row.style.display = (patient.includes(searchTerm) || doctor.includes(searchTerm)) ? '' : 'none';
+        });
+    });
+
+    // Sorting Functionality
+    function sortTable(columnIndex) {
+        const table = document.getElementById('appointmentTable');
+        const rows = Array.from(table.rows);
+        const isAscending = table.dataset.sortOrder !== 'asc';
+        table.dataset.sortOrder = isAscending ? 'asc' : 'desc';
+
+        rows.sort((a, b) => {
+            let aValue = a.cells[columnIndex].textContent;
+            let bValue = b.cells[columnIndex].textContent;
+
+            // Handle Date & Time column
+            if (columnIndex === 3) {
+                aValue = new Date(aValue);
+                bValue = new Date(bValue);
+            } else if (columnIndex === 0) {
+                aValue = parseInt(aValue);
+                bValue = parseInt(bValue);
+            }
+
+            if (aValue < bValue) return isAscending ? -1 : 1;
+            if (aValue > bValue) return isAscending ? 1 : -1;
+            return 0;
+        });
+
+        table.innerHTML = '';
+        rows.forEach(row => table.appendChild(row));
+    }
+</script>
