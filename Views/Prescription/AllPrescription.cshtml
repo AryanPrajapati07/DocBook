@@ -1,30 +1,37 @@
-﻿<br/>
-<h3>All Prescriprions</h3>
-<br />
+﻿
+@model List<DocBook.Models.PrescriptionViewModel>
 
-<table class="table">
+<h2>All Prescriptions</h2>
+
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>Prescription ID</th>
-            <th>Patient Name</th>
-            <th>Doctor Name</th>
+            <th>Patient</th>
+            <th>Doctor</th>
             <th>Medicine</th>
             <th>Dosage</th>
             <th>Instructions</th>
             <th>Prescribed On</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.PrescriptionId</td>
                 <td>@item.PatientName</td>
                 <td>@item.DoctorName</td>
                 <td>@item.MedicineName</td>
                 <td>@item.Dosage</td>
                 <td>@item.Instructions</td>
-                <td>@item.PrescribedOn.ToString("yyyy-MM-dd")</td>
+                <td>@item.PrescribedOn.ToShortDateString()</td>
+                <td>
+                    <a href="@Url.Action("Download", "Prescription", new { id = item.PrescriptionId })" class="btn btn-sm btn-danger">PDF</a>
+
+                    <a asp-action="Edit" asp-route-id="@item.PrescriptionId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.PrescriptionId" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure you want to delete this prescription?');">Delete</a>
+                </td>
             </tr>
         }
     </tbody>

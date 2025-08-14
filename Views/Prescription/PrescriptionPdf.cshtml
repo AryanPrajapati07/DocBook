@@ -1,0 +1,33 @@
+﻿@model DocBook.Models.PrescriptionPdfViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Prescription</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 20px; }
+        .info { margin-bottom: 20px; }
+        .section { margin-bottom: 15px; }
+        .label { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Medical Prescription</h2>
+    </div>
+    <div class="info">
+        <p><span class="label">Patient:</span> @Model.PatientName</p>
+        <p><span class="label">Doctor:</span> @Model.DoctorName</p>
+        <p><span class="label">Date:</span> @Model.AppointmentDate.ToString("dd MMM yyyy")</p>
+    </div>
+    <div class="section">
+        <h4>Medication</h4>
+        <p>@Model.MedicineName</p>
+    </div>
+    <div class="section">
+        <h4>Notes</h4>
+        <p>@Model.Instructions</p>
+    </div>
+</body>
+</html>

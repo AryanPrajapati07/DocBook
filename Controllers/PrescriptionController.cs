@@ -1,4 +1,5 @@
-﻿using DocBook.Models;
+﻿using DocBook.Helpers;
+using DocBook.Models;
 using DocBook.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -171,49 +172,67 @@ namespace DocBook.Controllers
 
         public IActionResult Edit(int id)
         {
-            var p = _repo.GetById(id);
-            if (p == null) return NotFound();
-            var vm = new PrescriptionViewModel
+            PrescriptionViewModel model = new PrescriptionViewModel();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                PrescriptionId = p.PrescriptionId,
-                AppointmentId = p.AppointmentId,
-                MedicineName = p.MedicineName,
-                Dosage = p.Dosage,
-                Instructions = p.Instructions
-            };
-            ViewBag.Appointment = _appRepo.GetById(p.AppointmentId);
-            return View(vm);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Prescriptions WHERE PrescriptionId = @Id", con);
+                cmd.Parameters.AddWithValue("@Id", id);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                if (rdr.Read())
+                {
+                    model.PrescriptionId = Convert.ToInt32(rdr["PrescriptionId"]);
+                    model.MedicineName = rdr["MedicineName"].ToString();
+                    model.Dosage = rdr["Dosage"].ToString();
+                    model.Instructions = rdr["Instructions"].ToString();
+                    
+                }
+            }
+
+            return View(model);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(PrescriptionViewModel vm)
+        public IActionResult Edit(PrescriptionViewModel model)
         {
-            if (!ModelState.IsValid)
+            using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                ViewBag.Appointment = _appRepo.GetById(vm.AppointmentId);
-                return View(vm);
+                SqlCommand cmd = new SqlCommand("dbo.sp_UpdatePrescription", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+
+                cmd.Parameters.AddWithValue("@PrescriptionId", model.PrescriptionId);
+                cmd.Parameters.AddWithValue("@MedicineName", model.MedicineName);
+                cmd.Parameters.AddWithValue("@Dosage", (object)model.Dosage ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Instructions", (object)model.Instructions ?? DBNull.Value);
+
+
+
+                con.Open();
+                cmd.ExecuteNonQuery();
             }
-            _repo.Update(vm);
-            return RedirectToAction(nameof(Index), new { appointmentId = vm.AppointmentId });
+
+            return RedirectToAction("AllPrescription");
         }
+
 
         public IActionResult Delete(int id)
         {
-            var p = _repo.GetById(id);
-            if (p == null) return NotFound();
-            return View(p);
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_DeletePrescription", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PrescriptionId", id);
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+            }
+
+            return RedirectToAction("AllPrescription");
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var p = _repo.GetById(id);
-            if (p == null) return NotFound();
-            _repo.Delete(id);
-            return RedirectToAction(nameof(Index), new { appointmentId = p.AppointmentId });
-        }
+        
 
         [HttpGet]
         public IActionResult AllPrescription() 
@@ -246,6 +265,50 @@ namespace DocBook.Controllers
             }
 
             return View(prescriptions);
+        }
+
+
+
+        public IActionResult Download(int id) 
+        {
+            PrescriptionPdfViewModel model = null;
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GetPreWithNames", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PrescriptionId", id);
+                    con.Open();
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            model = new PrescriptionPdfViewModel
+                            {
+                                PrescriptionId = Convert.ToInt32(reader["PrescriptionId"]),
+                                PatientName = reader["PatientName"].ToString(),
+                                DoctorName = reader["DoctorName"].ToString(),
+                                AppointmentDate = Convert.ToDateTime(reader["AppointmentDate"]),
+                                MedicineName = reader["MedicineName"].ToString(),
+                                Instructions = reader["Instructions"].ToString()
+                            };
+                        }
+                    }
+                }
+            }
+
+            if (model == null)
+            {
+                return NotFound("Prescription not found.");
+            }
+
+            string html = RazorToStringRenderer.RenderViewToString(this, "PrescriptionPdf", model);
+            var Renderer = new HtmlToPdf();
+            var pdf = Renderer.RenderHtmlAsPdf(html);
+            return File(pdf.BinaryData, "application/pdf", $"Prescription_{model.PrescriptionId}.pdf");
+
+
         }
 
 

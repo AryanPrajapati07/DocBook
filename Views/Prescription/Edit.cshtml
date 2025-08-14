@@ -1,0 +1,29 @@
+﻿@model DocBook.Models.PrescriptionViewModel
+
+<h2>Edit Prescription</h2>
+
+<form asp-action="Edit" method="post">
+    @Html.HiddenFor(m => m.PrescriptionId)
+
+   
+
+
+    <div class="form-group">
+        <label>Medicine</label>
+        @Html.TextBoxFor(m => m.MedicineName, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Dosage</label>
+        @Html.TextBoxFor(m => m.Dosage, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label>Instructions</label>
+        @Html.TextAreaFor(m => m.Instructions, new { @class = "form-control" })
+    </div>
+
+   
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
