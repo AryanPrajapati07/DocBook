@@ -146,7 +146,7 @@ namespace DocBook.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PrescriptionViewModel vm)
         {
-           
+
 
             // ✅ Insert into Prescriptions table
             using (SqlConnection con = new SqlConnection(_connectionString))
@@ -186,7 +186,7 @@ namespace DocBook.Controllers
                     model.MedicineName = rdr["MedicineName"].ToString();
                     model.Dosage = rdr["Dosage"].ToString();
                     model.Instructions = rdr["Instructions"].ToString();
-                    
+
                 }
             }
 
@@ -232,10 +232,10 @@ namespace DocBook.Controllers
             return RedirectToAction("AllPrescription");
         }
 
-        
+
 
         [HttpGet]
-        public IActionResult AllPrescription() 
+        public IActionResult AllPrescription()
         {
             List<PrescriptionViewModel> prescriptions = new List<PrescriptionViewModel>();
 
@@ -269,7 +269,7 @@ namespace DocBook.Controllers
 
 
 
-        public IActionResult Download(int id) 
+        public IActionResult Download(int id)
         {
             PrescriptionPdfViewModel model = null;
 
@@ -280,7 +280,7 @@ namespace DocBook.Controllers
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@PrescriptionId", id);
                     con.Open();
-                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
