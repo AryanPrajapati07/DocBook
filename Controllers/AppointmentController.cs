@@ -33,6 +33,7 @@ namespace DocBook.Controllers
             ViewBag.Doctors = new SelectList(_doctorRepo.GetDoctors(), "DoctorId", "Name");
             ViewBag.Patients = new SelectList(_patientRepo.GetPatients(), "PatientId", "Name");
 
+
             PopulatePatientsAndDoctors();
             var vm = new AppointmentViewModel
             {
@@ -54,6 +55,15 @@ namespace DocBook.Controllers
                 PopulatePatientsAndDoctors();
                 return View(vm);
             }
+
+            // ✅ Merge Date + SlotTime
+            if (!string.IsNullOrEmpty(vm.SelectedSlot))
+            {
+                DateTime slotTime = DateTime.Parse(vm.SelectedSlot);
+                vm.AppointmentDate = vm.AppointmentDate.Date.Add(slotTime.TimeOfDay);
+            }
+
+
             _repo.Add(vm);
             return RedirectToAction("Index");
         }

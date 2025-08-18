@@ -1,4 +1,5 @@
 ﻿using DocBook.Models;
+using DocBook.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -7,9 +8,12 @@ namespace DocBook.Controllers
     public class MedicalHistoryController : Controller
     {
         private readonly string _connectionString;
-        public MedicalHistoryController(IConfiguration configuration)
+        private readonly MedicalHistoryRepository _repo;
+        public MedicalHistoryController(MedicalHistoryRepository repo, IConfiguration configuration)
         {
+            _repo = repo;
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+           
         }
         public IActionResult Index(int patientId)
         {
@@ -62,6 +66,13 @@ namespace DocBook.Controllers
             }
             return RedirectToAction("Index", new { patientId = history.PatientId });
 
+        }
+
+       
+        public IActionResult ViewHistory()
+        {
+            var history = _repo.GetAllMedicalHistories();
+            return View(history);
         }
 
 
