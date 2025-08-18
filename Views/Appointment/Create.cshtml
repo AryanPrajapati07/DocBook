@@ -25,11 +25,15 @@
             <span asp-validation-for="DoctorId" class="text-red-500 text-sm mt-1"></span>
         </div>
 
+
         <!-- Appointment Date & Time -->
         <div>
             <label for="AppointmentDate" class="block text-sm font-medium text-gray-700">Appointment Date & Time</label>
             <input asp-for="AppointmentDate" type="datetime-local" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
             <span asp-validation-for="AppointmentDate" class="text-red-500 text-sm mt-1"></span>
+            <select id="slotDropdown" name="SlotTime" class="form-control">
+                <option value="">-- Select Slot --</option>
+            </select>
         </div>
 
         <!-- Reason -->
@@ -62,3 +66,25 @@
 <!-- Include Tailwind CSS -->
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function loadSlots() {
+        let doctorId = $("#DoctorId").val();       // PascalCase
+        let date = $("#AppointmentDate").val();   // PascalCase
+
+        if (doctorId && date) {
+            $.getJSON(`/Appointment/GetAvailableSlots?doctorId=${doctorId}&date=${date}`, function (data) {
+                $("#slotDropdown").empty();
+                $("#slotDropdown").append(`<option value="">-- Select Slot --</option>`);
+
+                data.forEach(slot => {
+                    $("#slotDropdown").append(`<option value="${slot.slotTime}">${slot.slotTime}</option>`);
+                });
+            });
+        }
+    }
+
+    $("#AppointmentDate").change(loadSlots);   // PascalCase
+    $("#DoctorId").change(loadSlots);          // PascalCase
+</script>

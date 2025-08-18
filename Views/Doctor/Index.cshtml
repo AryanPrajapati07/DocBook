@@ -10,6 +10,8 @@
         <a class="btn btn-primary btn-lg shadow-sm" href="/Doctor/Create">
             ➕ Add Doctor
         </a>
+       
+
     </div>
 
     <!-- Search Bar -->
@@ -78,6 +80,10 @@
                         <div class="btn-group w-100" role="group">
                             <a class="btn btn-outline-primary btn-sm" href="/Doctor/Edit/@p.DoctorId" title="Edit">
                                 ✏️ Edit
+                            </a>
+
+                            <a class="btn btn-outline-success btn-sm" href="/DoctorAvailability/SetAvailability?doctorId=@p.DoctorId" title="View">
+                                👁️ Availability
                             </a>
                            
                             <button class="btn btn-outline-danger btn-sm" onclick="deletePatient(@p.DoctorId, '@p.Name')" title="Delete">

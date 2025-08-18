@@ -2,6 +2,9 @@
 using DocBook.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace DocBook.Controllers
 {
@@ -10,11 +13,13 @@ namespace DocBook.Controllers
         private readonly AppointmentRepository _repo;
         private readonly PatientRepository _patientRepo;
         private readonly DoctorRepository _doctorRepo;
-        public AppointmentController(AppointmentRepository repo, PatientRepository patientRepo, DoctorRepository doctorRepo)
+        private readonly string _connectionString;
+        public AppointmentController(AppointmentRepository repo, PatientRepository patientRepo, DoctorRepository doctorRepo, IConfiguration configuration)
         {
             _repo = repo;
             _patientRepo = patientRepo;
             _doctorRepo = doctorRepo;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
         
         public IActionResult Index()
@@ -25,6 +30,9 @@ namespace DocBook.Controllers
 
         public IActionResult Create() 
         {
+            ViewBag.Doctors = new SelectList(_doctorRepo.GetDoctors(), "DoctorId", "Name");
+            ViewBag.Patients = new SelectList(_patientRepo.GetPatients(), "PatientId", "Name");
+
             PopulatePatientsAndDoctors();
             var vm = new AppointmentViewModel
             {
@@ -38,6 +46,9 @@ namespace DocBook.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(AppointmentViewModel vm)
         {
+            ViewBag.Doctors = new SelectList(_doctorRepo.GetDoctors(), "DoctorId", "Name");
+            ViewBag.Patients = new SelectList(_patientRepo.GetPatients(), "PatientId", "Name");
+
             if (!ModelState.IsValid)
             {
                 PopulatePatientsAndDoctors();
@@ -101,7 +112,30 @@ namespace DocBook.Controllers
             ViewBag.Doctors = new SelectList(doctors, "DoctorId", "Name");
         }
 
-       
+
+        [HttpGet]
+        public IActionResult GetAvailableSlots(int doctorId, DateTime date)
+        {
+            List<AvailableSlot> slots = new();
+            using (var con = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("sp_GetAvailableSlots", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@DoctorId", doctorId);
+                cmd.Parameters.AddWithValue("@Date", date);
+                con.Open();
+                using (var rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        slots.Add(new AvailableSlot { SlotTime = rdr["SlotTime"].ToString() });
+                    }
+                }
+            }
+            return Json(slots);
+        }
+
+
 
     }
 }

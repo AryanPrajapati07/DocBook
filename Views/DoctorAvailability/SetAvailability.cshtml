@@ -1,0 +1,23 @@
+﻿@model DoctorAvailability
+
+<h2>Set Availability</h2>
+<form asp-action="SetAvailability" method="post">
+    <label>Date</label>
+    <input type="hidden" asp-for="DoctorId" />
+
+
+    <input type="date" asp-for="AvailableDate" required />
+
+    <label>Start Time</label>
+    <input type="time" asp-for="StartTime" required />
+
+    <label>End Time</label>
+    <input type="time" asp-for="EndTime" required />
+
+    <label>Slot Duration (Minutes)</label>
+    <input type="number" asp-for="SlotDurationMinutes" required />
+
+    <input type="hidden" asp-for="DoctorId" value="@User.FindFirst("DoctorId")?.Value" />
+
+    <button type="submit">Save</button>
+</form>

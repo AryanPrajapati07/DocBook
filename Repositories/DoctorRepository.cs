@@ -8,9 +8,13 @@ namespace DocBook.Repositories
     public class DoctorRepository
     {
         private readonly AdoHelper _adoHelper;
-        public DoctorRepository(AdoHelper adoHelper)
+        private readonly string _connectionString;
+
+        public DoctorRepository(AdoHelper adoHelper , IConfiguration configuration)
         {
             _adoHelper = adoHelper;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+
         }
 
         public List<Doctor> GetDoctors()
@@ -29,6 +33,9 @@ namespace DocBook.Repositories
             }
             return list;
         }
+
+      
+
 
         public Doctor GetDoctorById(int id)
         {
