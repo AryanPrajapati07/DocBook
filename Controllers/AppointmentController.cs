@@ -63,10 +63,20 @@ namespace DocBook.Controllers
                 vm.AppointmentDate = vm.AppointmentDate.Date.Add(slotTime.TimeOfDay);
             }
 
+            // ✅ Map ViewModel to Appointment entity
+            var entity = new Appointment
+            {
+                PatientId = vm.PatientId,
+                DoctorId = vm.DoctorId,
+                AppointmentDate = vm.AppointmentDate,
+                Reason = vm.Reason,
+                Status = vm.Status
+            };
 
-            _repo.Add(vm);
+            _repo.Add(entity);
             return RedirectToAction("Index");
         }
+      
 
         public IActionResult Edit(int id)
         {
@@ -88,7 +98,7 @@ namespace DocBook.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(AppointmentViewModel vm)
+        public IActionResult Edit(Appointment vm)
         {
             if (!ModelState.IsValid)
             {

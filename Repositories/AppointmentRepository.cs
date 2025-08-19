@@ -51,7 +51,7 @@ namespace DocBook.Repositories
             };
         }
 
-        public void Add(AppointmentViewModel appointment)
+        public void Add(Appointment appointment)
         {
             _adoHelper.ExecNonQuery("sp_AddAppointment",
                 new SqlParameter("@PatientId", appointment.PatientId),
@@ -62,7 +62,7 @@ namespace DocBook.Repositories
             );
         }
 
-        public void Update(AppointmentViewModel appointment)
+        public void Update(Appointment appointment)
         {
             _adoHelper.ExecNonQuery("sp_UpdateAppointment",
                 new SqlParameter("@AppointmentId", appointment.AppointmentId),

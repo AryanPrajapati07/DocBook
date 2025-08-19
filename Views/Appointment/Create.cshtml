@@ -203,9 +203,9 @@
                     $(".slot-button").click(function () {
                         $(".slot-button").removeClass("bg-blue-500 text-white border-blue-500").addClass("bg-gray-100 text-gray-700 border-gray-300");
                         $(this).removeClass("bg-gray-100 text-gray-700 border-gray-300").addClass("bg-blue-500 text-white border-blue-500");
-                        $("#SlotTime").val($(this).data("time"));
+                        $("#SelectedSlot").val($(this).data("time"));
                         $("#slot-error").addClass("hidden");
-                        $("#appointmentForm").validate().element("#SlotTime");
+                        $("#appointmentForm").validate().element("#SelectedSlot");
                     });
                 }).fail(function () {
                     $("#slot-error").text("Failed to load slots. Please try again.").removeClass("hidden");
@@ -215,7 +215,7 @@
                 });
             } else {
                 $("#slotGrid").empty();
-                $("#SlotTime").val("");
+                $("#SelectedSlot").val("");
             }
         }
 

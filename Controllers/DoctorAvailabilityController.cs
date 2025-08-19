@@ -14,14 +14,31 @@ namespace DocBook.Controllers
         }
 
         [HttpGet]
-        public IActionResult SetAvailability(int doctorId)
+        public IActionResult SetAvailability()
         {
-            var model = new DoctorAvailability
+            var doctors = new List<Doctor>();
+
+            using (var con = new SqlConnection(_connectionString))
+            using (var cmd = new SqlCommand("SELECT DoctorId, Name FROM Doctors", con))
             {
-                DoctorId = doctorId
-            };
-            return View(model);
+                con.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        doctors.Add(new Doctor
+                        {
+                            DoctorId = (int)reader["DoctorId"],
+                            Name = reader["Name"].ToString()
+                        });
+                    }
+                }
+            }
+
+            ViewBag.Doctors = doctors;
+            return View();
         }
+
 
 
         [HttpPost]
@@ -36,6 +53,7 @@ namespace DocBook.Controllers
                 cmd.Parameters.AddWithValue("@StartTime", model.StartTime);
                 cmd.Parameters.AddWithValue("@EndTime", model.EndTime);
                 cmd.Parameters.AddWithValue("@SlotDurationMinutes", model.SlotDurationMinutes);
+
                 con.Open();
                 cmd.ExecuteNonQuery();
             }

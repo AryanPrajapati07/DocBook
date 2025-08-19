@@ -1,4 +1,6 @@
-﻿using DocBook.Helpers;
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using DocBook.Helpers;
 using DocBook.Models;
 using DocBook.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +17,14 @@ namespace DocBook.Controllers
         private readonly AppointmentRepository _appRepo;
         private readonly string _connectionString = "Data Source=.;Initial Catalog=HospitalDB;Integrated Security=True;Trust Server Certificate=True;";
         private readonly IConfiguration _configuration;
+        private readonly IConverter _converter;
 
-        public PrescriptionController(PrescriptionRepository repo, AppointmentRepository appRepo, IConfiguration configuration)
+        public PrescriptionController(PrescriptionRepository repo, AppointmentRepository appRepo, IConfiguration configuration,IConverter converter)
         {
             _repo = repo;
             _appRepo = appRepo;
             _configuration = configuration;
+            _converter = converter;
         }
 
         public IActionResult Index(int appointmentId)
@@ -275,7 +279,7 @@ namespace DocBook.Controllers
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("sp_GetPreWithNames", con))
+                using (SqlCommand cmd = new SqlCommand("sp_GetPreWithName", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@PrescriptionId", id);
@@ -303,13 +307,31 @@ namespace DocBook.Controllers
                 return NotFound("Prescription not found.");
             }
 
+            // ✅ Render Razor view into HTML
             string html = RazorToStringRenderer.RenderViewToString(this, "PrescriptionPdf", model);
-            var Renderer = new HtmlToPdf();
-            var pdf = Renderer.RenderHtmlAsPdf(html);
-            return File(pdf.BinaryData, "application/pdf", $"Prescription_{model.PrescriptionId}.pdf");
 
-
+            // ✅ Build PDF document using DinkToPdf
+            var pdfDoc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait
+                },
+                Objects = {
+            new ObjectSettings
+            {
+                HtmlContent = html
+            }
         }
+            };
+
+            // ✅ Convert to PDF
+            var file = _converter.Convert(pdfDoc);
+
+            return File(file, "application/pdf", $"Prescription_{model.PrescriptionId}.pdf");
+        }
+
 
 
     }

@@ -1,8 +1,18 @@
+using BaselineTypeDiscovery;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using DocBook.Data;
 using DocBook.Repositories;
+using DocBook.Helpers;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+string wkHtmlToPdfPath = Path.Combine(Directory.GetCurrentDirectory(), "wkhtmltopdf", "libwkhtmltox.dll");
+DocBook.Helpers.CustomAssemblyLoadContext context = new DocBook.Helpers.CustomAssemblyLoadContext();
+context.LoadUnmanagedLibrary(wkHtmlToPdfPath);
+
 
 
 // Add services to the container.
