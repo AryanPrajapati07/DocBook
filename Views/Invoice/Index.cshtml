@@ -1,0 +1,40 @@
+﻿@model List<DocBook.Models.Invoice>
+@{
+    ViewData["Title"] = "Invoices";
+}
+<div class="container mt-4">
+    <h2>Invoices</h2>
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Appointment</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Services</th>
+                <th>Total</th>
+                <th>Invoice Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>@i.InvoiceId</td>
+                    <td>@i.AppointmentDate.ToString("dd-MMM-yyyy hh:mm tt")</td>
+                    <td>@i.PatientName</td>
+                    <td>@i.DoctorName</td>
+                    <td>@i.Services</td>
+                    <td>@i.TotalAmount</td>
+                    <td>@i.InvoiceDate.ToString("dd-MMM-yyyy")</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@i.InvoiceId">View</a>
+                        <a asp-action="Download" asp-route-id="@i.InvoiceId" class="btn btn-sm btn-outline-success">Download PDF</a>
+                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@i.InvoiceId" onclick="return confirm('Delete this invoice?')">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

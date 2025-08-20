@@ -8,7 +8,13 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light"><div class="container"><a class="navbar-brand" href="/">Hospital</a></div></nav>
-    <div class="container">@RenderBody()</div>
+    <div class="container">
+        @RenderBody()
+    </div>
     <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

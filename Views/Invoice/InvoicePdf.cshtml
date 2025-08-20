@@ -1,0 +1,62 @@
+﻿@model InvoicePdfViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Invoice @Model.InvoiceId</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h2>Hospital Invoice</h2>
+    <p><strong>Invoice ID:</strong> @Model.InvoiceId</p>
+    <p><strong>Invoice Date:</strong> @Model.InvoiceDate.ToString("dd-MMM-yyyy")</p>
+
+    <table>
+        <tr>
+            <th>Patient</th>
+            <td>@Model.PatientName</td>
+        </tr>
+        <tr>
+            <th>Doctor</th>
+            <td>@Model.DoctorName</td>
+        </tr>
+        <tr>
+            <th>Appointment Date</th>
+            <td>@Model.AppointmentDate.ToString("dd-MMM-yyyy hh:mm tt")</td>
+        </tr>
+        <tr>
+            <th>Services</th>
+            <td>@Model.Services</td>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <td>@Model.TotalAmount.ToString("C")</td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,21 @@
+﻿@model DocBook.Models.Invoice
+@{
+    ViewData["Title"] = "Invoice Details";
+}
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <div class="card mt-3">
+        <div class="card-body">
+            <p><strong>Invoice #:</strong> @Model.InvoiceId</p>
+            <p><strong>Patient:</strong> @Model.PatientName</p>
+            <p><strong>Doctor:</strong> @Model.DoctorName</p>
+            <p><strong>Appointment:</strong> @Model.AppointmentDate.ToString("dd-MMM-yyyy hh:mm tt")</p>
+            <p><strong>Services:</strong> @Model.Services</p>
+            <p><strong>Total:</strong> @Model.TotalAmount</p>
+            <p><strong>Invoice Date:</strong> @Model.InvoiceDate.ToString("dd-MMM-yyyy")</p>
+        </div>
+    </div>
+    <div class="mt-3">
+        <a asp-action="Index" class="btn btn-secondary">Back</a>
+    </div>
+</div>

@@ -22,6 +22,9 @@ builder.Services.AddScoped<PatientRepository>();
 builder.Services.AddScoped<DoctorRepository>();
 builder.Services.AddScoped<AppointmentRepository>();
 builder.Services.AddScoped<PrescriptionRepository>();
+builder.Services.AddScoped<InvoiceRepository>();
+builder.Services.AddScoped<MedicalHistoryRepository>();
+
 
 var app = builder.Build();
 

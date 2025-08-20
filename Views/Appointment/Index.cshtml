@@ -41,9 +41,17 @@
                         <td class="px-4 py-2 text-sm">
                             <a asp-controller="Prescription" asp-action="Index" asp-route-appointmentId="@a.AppointmentId"
                                class="inline-block bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition mr-2">View</a>
-                            <a asp-controller="MedicalHistory" asp-action="Index" asp-route-appointmentId="@a.AppointmentId"
-                               class="inline-block bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition mr-2">MedicalHistory</a>
+                            <a asp-controller="MedicalHistory" asp-action="Index" asp-route-patientId="@a.PatientId"
+                               class="inline-block bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition mr-2">
+                                Medical
+                            </a>
+
                             @* <a href="/MedicalHistory/Index" class="btn btn-primary btn-lg mx-2 mb-3">MedicalHistory</a> *@
+                            <a class="btn btn-sm btn-success"
+                               href="/Invoice/Create?appointmentId=@a.AppointmentId">
+                                Generate Invoice
+                            </a>
+
 
                          </td>
                         <td class="px-4 py-2 text-sm">

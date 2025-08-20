@@ -1,0 +1,49 @@
+﻿@model DocBook.Models.InvoiceCreateViewModel
+@{
+    ViewData["Title"] = "Generate Invoice";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <div class="mb-2"><strong>Appointment:</strong> @Model.AppointmentDate.ToString("dd-MMM-yyyy hh:mm tt")</div>
+            <div class="mb-2"><strong>Patient:</strong> @Model.PatientName</div>
+            <div class="mb-2"><strong>Doctor:</strong> @Model.DoctorName</div>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" class="mt-3">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="AppointmentId" />
+        <input type="hidden" asp-for="PatientId" />
+        <input type="hidden" asp-for="DoctorId" />
+        <input type="hidden" asp-for="PatientName" />
+        <input type="hidden" asp-for="DoctorName" />
+        <input type="hidden" asp-for="AppointmentDate" />
+
+        <div class="mb-3">
+            <label asp-for="Services" class="form-label">Services (comma separated)</label>
+            <textarea asp-for="Services" class="form-control" rows="3" placeholder="Consultation, CBC Test, X-Ray"></textarea>
+            <span asp-validation-for="Services" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TotalAmount" class="form-label"></label>
+            <input asp-for="TotalAmount" class="form-control" />
+            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Invoice</button>
+            <a asp-action="Index" class="btn btn-secondary">Back</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
