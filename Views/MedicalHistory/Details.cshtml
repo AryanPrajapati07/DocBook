@@ -1,0 +1,31 @@
+﻿<h2>Medical History Details</h2>
+<p><strong>Diagnosis:</strong> @Model.History.Diagnosis</p>
+<p><strong>Allergies:</strong> @Model.History.Allergies</p>
+
+<h3>Upload Medical Report</h3>
+<form asp-action="UploadReport" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="historyId" value="@Model.History.HistoryId" />
+    <input type="hidden" name="patientId" value="@Model.History.PatientId" />
+    <input type="file" name="ReportFile" class="form-control" required />
+    <br />
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+<h3>Uploaded Reports</h3>
+<table class="table table-bordered">
+    <tr>
+        <th>Report Name</th>
+        <th>Date</th>
+        <th>Download</th>
+    </tr>
+    @foreach (var report in Model.Reports)
+    {
+        <tr>
+            <td>@report.ReportName</td>
+            <td>@report.UploadedOn.ToString("dd-MMM-yyyy")</td>
+            <td>
+                <a href="@report.FilePath" download class="btn btn-success">Download</a>
+            </td>
+        </tr>
+    }
+</table>

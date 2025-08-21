@@ -8,6 +8,7 @@
             <th>Diagnosis</th>
             <th>Medications</th>
             <th>Allergies</th>
+            <th>Reports</th>
         </tr>
     </thead>
     <tbody>
@@ -17,6 +18,9 @@
                 <td>@item.Diagnosis</td>
                 <td>@item.Medications</td>
                 <td>@item.Allergies</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.HistoryId" class="btn btn-info">View Details</a>
+                </td>
             </tr>
         }
     </tbody>
