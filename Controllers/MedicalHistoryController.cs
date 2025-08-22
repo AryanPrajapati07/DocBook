@@ -68,7 +68,7 @@ namespace DocBook.Controllers
                     cmd.Parameters.AddWithValue("@PatientId", patientId);
                     cmd.Parameters.AddWithValue("@HistoryId", historyId);
                     cmd.Parameters.AddWithValue("@ReportName", ReportFile.FileName);    
-                    cmd.Parameters.AddWithValue("@FilePath", "/reports" + fileName);
+                    cmd.Parameters.AddWithValue("@FilePath", "/reports/" + fileName);
                     cmd.ExecuteNonQuery();
                 }
 
@@ -105,6 +105,8 @@ namespace DocBook.Controllers
             vm.Reports = new List<MedicalReport>();
             using (SqlConnection con = new SqlConnection(_connectionString)) 
             { 
+
+
                 con.Open();
                 SqlCommand cmd = new SqlCommand("sp_GetMedicalReports", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -127,6 +129,22 @@ namespace DocBook.Controllers
             return View(vm);
 
         }
+
+        [HttpGet]
+        public IActionResult ViewReport(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return BadRequest("File name is missing");
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", fileName);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound("File not found.");
+
+            var fileStream = System.IO.File.OpenRead(filePath);
+            return File(fileStream, "application/pdf");
+        }
+
 
 
 
